@@ -9,15 +9,26 @@ typedef struct point{
     int col;
 } point;
 int bSize;
-int length=0;
-point * surroundings;
+int length=0;//length of target word
+point * surroundings; // shift for searching 8 points arround
 int** output;
+char* answer="Word not found!";
 void printPuzzle(char** arr) {
-	// This function will print out the complete puzzle grid (arr). 
-    // It must produce the output in the SAME format as the samples 
-    // in the instructions.
-    // Your implementation here...
-
+    for(int i=0;i<bSize;i++){
+        for(int j=0;j<bSize;j++){
+            printf("%c ",*(*(arr+i)+j));
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+void printPaths(){
+    for(int i=0;i<bSize;i++){
+        for(int j=0;j<bSize;j++){
+            printf("%d ",*(*(output+i)+j));
+        }
+        printf("\n");
+    }
 }
 void printpoint(point p){
     printf("%d, %d",p.row,p.col);
@@ -28,41 +39,42 @@ point addPoints(point a, point b){
 char checkPoint(char** arr, point p){
     return *(*(arr+p.row)+p.col);
 }
-void writetoGlobal(point* list){
-    for(int k=0;k<length;k++){
-        *(*(output+(list+k)->row)+(list+k)->col) = *(*(output+(list+k)->row)+(list+k)->col)*10+k+1;
+void writetoOutput(point* path){
+    for(int k=0;k<length;k++){//for every point in the path, write it in the output
+        *(*(output+(path+k)->row)+(path+k)->col) = *(*(output+(path+k)->row)+(path+k)->col)*10+k+1;
     }
 }
-void fn(char** block, char* word, point* list, int index){
-    for(int i=0;i<8;i++){
-        point p = addPoints(*(list+index-1),*(surroundings+i));
-        if(p.row==-1 || p.col==-1 || p.row==bSize || p.col==bSize){
+void fn(char** block, char* word, point* path, int index){
+    for(int i=0;i<8;i++){//for every point surrounding 
+        point p = addPoints(*(path+index-1),*(surroundings+i)); // current point to check
+        if(p.row==-1 || p.col==-1 || p.row==bSize || p.col==bSize){ // if out of bounds then skip
             continue;
         }
-        if(checkPoint(block,p)==*(word+index)){
-            *(list+index)=p;
+        if(checkPoint(block,p)==*(word+index)){//if correct letter found
+            *(path+index)=p;//add current point being checked to path found
             if(index!=length){
-                fn(block,word,list,index+1);
+                fn(block,word,path,index+1);
             }
             else{
-                writetoGlobal(list);
+                writetoOutput(path);
+                answer = "Word found!";
             }
         }
+        *(path+index)=(point){-1,-1};//remove the most recently added point from path (backtracking)
     }
-    *(list+index)=(point){-1,-1};
 }
 void searchPuzzle(char** block, char* word) {
-    while(*(word+length)!='\0'){
+    while(*(word+length)!='\0'){//calculate target word length
         length++;
     }
-    output = malloc(bSize*sizeof(int*));
+    output = malloc(bSize*sizeof(int*)); // define globabl array and intitialize everything to 0
     for(int i=0;i<bSize;i++){
         *(output+i)=malloc(bSize*sizeof(int));
         for(int j=0;j<bSize;j++){
             *(*(output+i)+j)=0;
         }
     }
-    if(surroundings = malloc(8*sizeof(point)));{//if not void then define surrouding shift
+    if(surroundings = malloc(8*sizeof(point)));{//if not void then define shift for 8 points surrounding
         *(surroundings) = (point){-1,-1};
         *(surroundings+1) = (point){-1,0};
         *(surroundings+2) = (point){-1,1};
@@ -72,10 +84,10 @@ void searchPuzzle(char** block, char* word) {
         *(surroundings+6) = (point){1,0};
         *(surroundings+7) = (point){1,1};
     }
-    point* path = malloc(length*sizeof(point));
-    for(int i=0;i<bSize;i++){
+    point* path = malloc(length*sizeof(point));//define path
+    for(int i=0;i<bSize;i++){       //search every position for first letter
         for(int j=0;j<bSize;j++){
-            if(*(*(block+i)+j)==*word){
+            if(*(*(block+i)+j)==*word){     //if first letter found, append current point i,j to path, and then depth first search from it
                 *path = (point){i,j};
                 fn(block, word, path,1);
             }
@@ -87,7 +99,11 @@ void searchPuzzle(char** block, char* word) {
     // as shown in the sample runs. If not found, it will print a 
     // different message as shown in the sample runs.
     // Your implementation here...
-
+    
+    printf("%s\n",answer);
+    printPaths();
+    
+    
     //free memory
     free(word);
     for(int i=0;i<bSize;i++){
