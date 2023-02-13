@@ -51,16 +51,17 @@ void fn(char** block, char* word, point* path, int index){
             continue;
         }
         if(checkPoint(block,p)==*(word+index)){//if correct letter found
-            *(path+index)=p;//add current point being checked to path found
-            if(index!=length){
+            (path+index)->row = p.row;//add current point being checked to path found
+            (path+index)->col = p.col;
+            if(index!=length-1){
                 fn(block,word,path,index+1);
             }
             else{
                 writetoOutput(path);
                 answer = "Word found!";
             }
+            *(path+index)=(point){-1,-1};//remove the most recently added point from path (backtracking)
         }
-        *(path+index)=(point){-1,-1};//remove the most recently added point from path (backtracking)
     }
 }
 void searchPuzzle(char** block, char* word) {
