@@ -74,16 +74,15 @@ void searchPuzzle(char** block, char* word) {
             *(*(output+i)+j)=0;
         }
     }
-    if(surroundings = malloc(8*sizeof(point)));{//if not void then define shift for 8 points surrounding
-        *(surroundings) = (point){-1,-1};
-        *(surroundings+1) = (point){-1,0};
-        *(surroundings+2) = (point){-1,1};
-        *(surroundings+3) = (point){0,-1};
-        *(surroundings+4) = (point){0,1};
-        *(surroundings+5) = (point){1,-1};
-        *(surroundings+6) = (point){1,0};
-        *(surroundings+7) = (point){1,1};
-    }
+    surroundings = malloc(8*sizeof(point));//if not void then define shift for 8 points surrounding
+    *(surroundings) = (point){-1,-1};
+    *(surroundings+1) = (point){-1,0};
+    *(surroundings+2) = (point){-1,1};
+    *(surroundings+3) = (point){0,-1};
+    *(surroundings+4) = (point){0,1};
+    *(surroundings+5) = (point){1,-1};
+    *(surroundings+6) = (point){1,0};
+    *(surroundings+7) = (point){1,1};
     point* path = malloc(length*sizeof(point));//define path
     for(int i=0;i<bSize;i++){       //search every position for first letter
         for(int j=0;j<bSize;j++){
