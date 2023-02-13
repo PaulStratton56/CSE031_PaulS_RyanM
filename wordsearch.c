@@ -60,11 +60,10 @@ void fn(char** block, char* word, point* path, int index){
                 writetoOutput(path);
                 answer = "Word found!";
             }
-            *(path+index)=(point){-1,-1};//remove the most recently added point from path (backtracking)
         }
     }
 }
-void searchPuzzle(char** block, char* word) {
+void searchPuzzle(char** inputBlock, char* word) {
     while(*(word+length)!='\0'){//calculate target word length
         length++;
     }
@@ -87,9 +86,9 @@ void searchPuzzle(char** block, char* word) {
     point* path = malloc(length*sizeof(point));//define path
     for(int i=0;i<bSize;i++){       //search every position for first letter
         for(int j=0;j<bSize;j++){
-            if(*(*(block+i)+j)==*word){     //if first letter found, append current point i,j to path, and then depth first search from it
+            if(*(*(inputBlock+i)+j)==*word){     //if first letter found, append current point i,j to path, and then depth first search from it
                 *path = (point){i,j};
-                fn(block, word, path,1);
+                fn(inputBlock, word, path,1);
             }
         }
     }
@@ -105,13 +104,6 @@ void searchPuzzle(char** block, char* word) {
     
     
     //free memory
-    free(word);
-    for(int i=0;i<bSize;i++){
-        free(*(block+i));
-        free(*(output+i));
-    }
-    free(block);
-    free(output);
     free(surroundings);
     free(path);
 
@@ -160,5 +152,14 @@ int main(int argc, char **argv) {
     // Call searchPuzzle to the word in the puzzle
     searchPuzzle(block, word);
 
+
+    //free memory
+    free(word);
+    for(int i=0;i<bSize;i++){
+        free(*(block+i));
+        free(*(output+i));
+    }
+    free(block);
+    free(output);
     return 0;
 }
